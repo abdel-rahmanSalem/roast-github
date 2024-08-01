@@ -1,4 +1,4 @@
-import "./App.css";
+// import "./App.css";
 import Footer from "./components/Footer";
 import Main from "./components/Main";
 import Navbar from "./components/Navbar";
@@ -7,7 +7,7 @@ import Navbar from "./components/Navbar";
 function App() {
   return (
     <>
-      <div className="h-[100vh] w-full font-montserrat flex flex-col justify-between">
+      <div className="h-screen bg w-full font-montserrat flex flex-col justify-between bg-slate-950 p-6 text-gray-200">
         <Navbar />
         <Main />
         {/* <ServerDown /> */}
