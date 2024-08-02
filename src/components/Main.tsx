@@ -22,7 +22,8 @@ const Main = () => {
     }
     const trimmedInput = inputUserName.trim();
     //https://roast-github.up.railway.app
-    const URL = "https://roast-github.up.railway.app/api/v1/roast/" + trimmedInput;
+    const URL =
+      "https://roast-github.up.railway.app/api/v1/roast/" + trimmedInput;
 
     setErrorMessage("");
     setRoastMessage("");
@@ -36,10 +37,9 @@ const Main = () => {
           setAvtarUrl(data.url);
         } else if (data.type === "roast") {
           setRoastMessage((prevMessages) => prevMessages + data.content);
-        } else if(data.type === 'error'){
+        } else if (data.type === "error") {
           setErrorMessage(data.content);
-        }
-        else if (data.type === "end") {
+        } else if (data.type === "end") {
           eventSource.close();
           setLoading(false);
         }
@@ -107,54 +107,84 @@ const Main = () => {
     }
   }
 
+  const notRoasted: boolean =
+    roastMessage.length === 0 ||
+    roastMessage === "Github Profile not found." ||
+    errorMessage.length > 0;
+
+  function embtyStates() {
+    setInputUserName("");
+    setRoastMessage("");
+    setErrorMessage("");
+    setLoading(false);
+    setDownloading(false);
+    setAvtarUrl("");
+  }
+
   return (
-    <div className="w-10/12 md:w-1/2 flex flex-col justify-center mx-auto">
-      <form action="" className="w-full" onSubmit={getRoastMessage}>
-        <div className="w-full flex flex-col">
-          <input
-            type="text"
-            placeholder="Enter Your GitHub username"
-            className="w-full rounded-md p-2 mb-4 border-white outline-none text-center"
-            onChange={handleInputChange}
-          />
-          <button
-            className={`w-full rounded-md p-2 border ${
-              loading ? "text-gray-400 border-gray-400" : "border-white"
-            }`}
-            type="submit"
-            disabled={loading}
-          >
-            Get Roasted
-          </button>
-        </div>
-      </form>
-
-      <div className="w-full mt-4">
-        {roastMessage === "Github Profile not found." ? (
-          <p className="text-center text-red-500">{roastMessage}</p>
-        ) : (
-          <div>
-            <img
-              src={avtarUrl}
-              alt="profile-avatar"
-              className={`${
-                avtarUrl === "" ? "w-0 h-0" : "w-10 h-10 mr-3 mb-3 rounded-full float-left"
-              }`}
-            />
-            <p className="text-base leading-relaxed">{roastMessage}</p>
-          </div>
-        )}
-
-        {errorMessage && (
-          <p className="text-center text-red-500">{errorMessage}</p>
-        )}
-
-        {errorMessage === "" &&
-          roastMessage != "" &&
-          roastMessage != "Github Profile not found." && (
-            <div className="mt-2 w-full flex justify-center items-center">
+    <div className="flex flex-col items-center w-full gap-6">
+      {notRoasted && (
+        <>
+          <div className="w-full max-w-lg rounded-lg border border-slate-200/5 bg-slate-900/20 shadow-lg px-8 py-6">
+            <form
+              action=""
+              className="flex w-full flex-col gap-4"
+              onSubmit={getRoastMessage}
+            >
+              <input
+                type="text"
+                placeholder="Enter Your GitHub username"
+                className="rounded-md border border-slate-200/5 bg-slate-950 p-3 text-gray-200 placeholder-gray-400 focus:border-sky-600/70 focus:outline-none focus:ring-1 focus:ring-sky-600/70"
+                onChange={handleInputChange}
+              />
               <button
-                className={`mt-2 rounded-md p-2 border mx-auto ${
+                className="w-full rounded-md px-4 py-2 border border-slate-200/10 bg-sky-950/35 text-slate-50/90 transition hover:border-sky-800/70 hover:bg-sky-950/90 hover:text-white"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? "Roasting..." : "Roast It"}
+              </button>
+            </form>
+          </div>
+          <div className="w-full">
+            {roastMessage && (
+              <p className="text-center text-red-500/70">{roastMessage}</p>
+            )}
+            {errorMessage && (
+              <p className="text-center text-red-500/70">{errorMessage}</p>
+            )}
+          </div>
+        </>
+      )}
+
+      {errorMessage === "" && !notRoasted && (
+        <>
+          <div className="flex flex-col gap-4 w-full max-w-2xl rounded-lg border border-slate-200/5 bg-slate-900/20 shadow-lg px-8 py-6">
+            <div className="flex gap-2 items-start">
+              <img
+                src={avtarUrl}
+                alt="profile-avatar"
+                className={`${
+                  avtarUrl === "" ? "w-0 h-0" : "w-14 h-14 rounded-full "
+                }`}
+              />
+              <div>
+                <h1 className="font-bold text-slate-50/90 text-sm sm:text-base">
+                  My GitHub Name
+                </h1>
+                <h3 className="font-medium text-slate-50/60 text-xs sm:text-sm">
+                  @ {inputUserName}
+                </h3>
+              </div>
+            </div>
+            <div>
+              <p className="leading-relaxed mx-2 text-slate-50/90">
+                {roastMessage}
+              </p>
+            </div>
+            <div className="self-end">
+              <button
+                className={`mt-2 rounded-md p-2 text-sm border mx-auto ${
                   downloading
                     ? "text-gray-400 border-gray-400"
                     : "border-green-400 text-green-400"
@@ -162,11 +192,20 @@ const Main = () => {
                 onClick={downloadImage}
                 disabled={downloading}
               >
-                Download Image
+                {downloading ? "Downloading" : "Download Image"}
               </button>
             </div>
-          )}
-      </div>
+          </div>
+          <div className="w-full max-w-2xl">
+            <button
+              onClick={embtyStates}
+              className="self-start text-sm font-semibold text-neutral-400 transition-colors hover:text-neutral-300 sm:text-base"
+            >
+              &lt; Re-Roast
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 };
