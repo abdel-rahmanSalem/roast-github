@@ -13,7 +13,7 @@ const Main = () => {
 
   console.log("Hello, World!", loading);
 
-  async function getRoastMessage(e: any) {
+  async function getRoastMessage(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (inputUserName === "") {
       setErrorMessage("Please enter a username.");
@@ -23,7 +23,8 @@ const Main = () => {
     const trimmedInput = inputUserName.trim();
     //https://roast-github.up.railway.app
     const URL =
-      "https://roast-github.up.railway.app/api/v1/roast/" + trimmedInput;
+      // "https://roast-github.up.railway.app/api/v1/roast/" + trimmedInput;
+      "http://localhost:3000/api/v1/roast/" + trimmedInput;
 
     setErrorMessage("");
     setRoastMessage("");
